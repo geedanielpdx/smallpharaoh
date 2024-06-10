@@ -51,28 +51,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
   initMap();
 
-  let currentSlide = 0;
+  // Hero Slider
+  let currentHeroSlide = 0;
+  const heroSlides = document.querySelectorAll('#hero-slider img');
+  const totalHeroSlides = heroSlides.length;
 
-  function showSlide(index) {
+  function showHeroSlide(index) {
+      heroSlides.forEach((slide, i) => {
+          slide.classList.toggle('active', i === index);
+      });
+  }
+
+  function nextHeroSlide() {
+      currentHeroSlide = (currentHeroSlide + 1) % totalHeroSlides;
+      showHeroSlide(currentHeroSlide);
+  }
+
+  setInterval(nextHeroSlide, 3000); // Change hero slide every 3 seconds
+
+  // Reviews Carousel
+  let currentReviewSlide = 0;
+
+  function showReviewSlide(index) {
       const slides = document.querySelectorAll('.review');
       if (index >= slides.length) {
-          currentSlide = 0;
+          currentReviewSlide = 0;
       } else if (index < 0) {
-          currentSlide = slides.length - 1;
+          currentReviewSlide = slides.length - 1;
       } else {
-          currentSlide = index;
+          currentReviewSlide = index;
       }
-      const offset = -currentSlide * 100;
+      const offset = -currentReviewSlide * 100;
       document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
   }
 
   window.nextSlide = function() {
-      showSlide(currentSlide + 1);
+      showReviewSlide(currentReviewSlide + 1);
   };
 
   window.prevSlide = function() {
-      showSlide(currentSlide - 1);
+      showReviewSlide(currentReviewSlide - 1);
   };
 
-  setInterval(nextSlide, 5000); // Auto-slide every 5 seconds
+  setInterval(window.nextSlide, 5000); // Auto-slide every 5 seconds
 });
