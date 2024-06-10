@@ -8,7 +8,7 @@ body {
   font-family: 'Cairo', sans-serif;
   display: flex;
   flex-direction: column;
-  background-image: url('images/smallpharaohs.jpg'); /* Use the new image name here */
+  background-image: url('images/SmallPharaoh3.jpg'); /* Use the new image name here */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -140,7 +140,7 @@ nav ul li a:hover {
 }
 
 .location img, .gallery-item img {
-  width: 100%; /* Adjust width for smaller screens */
+  width: 89%; /* Adjust width for smaller screens */
   height: auto;
   margin-top: 1em;
   border-radius: 8px;
@@ -261,10 +261,42 @@ footer p {
   text-align: center;
 }
 
+.carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
 .review {
+  min-width: 100%;
+  box-sizing: border-box;
   background-color: rgba(255, 255, 255, 0.9); /* Very transparent white */
   border-radius: 10px;
   padding: 1em;
   margin: 1em 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.carousel-control.prev {
+  left: 10px;
+}
+
+.carousel-control.next {
+  right: 10px;
 }

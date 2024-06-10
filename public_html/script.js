@@ -1,47 +1,78 @@
-function initMap() {
-  const placeId = 'ChIJ6SGO1AUKlVQRdB7wYgNb7HA'; // Your Google Place ID
+document.addEventListener('DOMContentLoaded', function() {
+  const placeIds = [
+      'ChIJ718v6bcLlVQRUzcqgdClZ20', // Midtown Beer Garden Place ID
+      'ChIJ6SGO1AUKlVQRdB7wYgNb7HA', // Small Pharaoh Google Place ID
+      // Add more place IDs if available
+  ];
   const apiKey = 'AIzaSyB-SDwxIkzzVm_Dx8HiAgjU3N5sEcOfl-c'; // Your Google API Key
+  let allReviews = [];
 
-  fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`)
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-          }
-          return response.json();
-      })
-      .then(data => {
-          if (data.result && data.result.reviews) {
-              const reviews = data.result.reviews;
-              displayReviews(reviews);
-          } else {
-              console.error('No reviews found');
-          }
-      })
-      .catch(error => console.error('Error fetching reviews:', error));
-}
+  function fetchReviews(placeId) {
+      return fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`)
+          .then(response => response.json())
+          .then(data => {
+              if (data.result && data.result.reviews) {
+                  allReviews = allReviews.concat(data.result.reviews);
+              }
+          })
+          .catch(error => console.error('Error fetching reviews:', error));
+  }
 
-function displayReviews(reviews) {
-  const reviewsContainer = document.getElementById('reviews-container');
-  reviewsContainer.innerHTML = ''; // Clear previous reviews if any
-  reviews.forEach(review => {
-      const reviewElement = document.createElement('div');
-      reviewElement.classList.add('review');
-      
-      const author = document.createElement('h4');
-      author.textContent = review.author_name;
-      
-      const rating = document.createElement('p');
-      rating.textContent = `Rating: ${review.rating}`;
-      
-      const text = document.createElement('p');
-      text.textContent = review.text;
-      
-      reviewElement.appendChild(author);
-      reviewElement.appendChild(rating);
-      reviewElement.appendChild(text);
-      
-      reviewsContainer.appendChild(reviewElement);
-  });
-}
+  function displayReviews() {
+      const reviewsContainer = document.getElementById('reviews-container');
+      reviewsContainer.innerHTML = ''; // Clear previous reviews if any
+      allReviews.forEach(review => {
+          const reviewElement = document.createElement('div');
+          reviewElement.classList.add('review');
+          
+          const author = document.createElement('h4');
+          author.textContent = review.author_name;
+          
+          const rating = document.createElement('p');
+          rating.textContent = `Rating: ${review.rating}`;
+          
+          const text = document.createElement('p');
+          text.textContent = review.text;
+          
+          reviewElement.appendChild(author);
+          reviewElement.appendChild(rating);
+          reviewElement.appendChild(text);
+          
+          reviewsContainer.appendChild(reviewElement);
+      });
+  }
 
-document.addEventListener('DOMContentLoaded', initMap);
+  async function initMap() {
+      for (const placeId of placeIds) {
+          await fetchReviews(placeId);
+      }
+      displayReviews();
+  }
+
+  initMap();
+
+  let currentSlide = 0;
+
+  function showSlide(index) {
+      const slides = document.querySelectorAll('.review');
+      if (index >= slides.length) {
+          currentSlide = 0;
+      } else if (index < 0) {
+          currentSlide = slides.length - 1;
+      } else {
+          currentSlide = index;
+      }
+      const offset = -currentSlide * 100;
+      document.querySelector('.carousel-inner').style.transform = `translateX(${offset}%)`;
+  }
+
+  window.nextSlide = function() {
+      showSlide(currentSlide + 1);
+  };
+
+  window.prevSlide = function() {
+      showSlide(currentSlide - 1);
+  };
+
+  setInterval(nextSlide, 5000); // Auto-slide every 5 seconds
+});
