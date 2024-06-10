@@ -1,9 +1,14 @@
 function initMap() {
-  const placeId = 'ChIJ718v6bcLlVQRUzcqgdClZ20'; // Your Google Place ID
+  const placeId = 'ChIJ6SGO1AUKlVQRdB7wYgNb7HA'; // Your Google Place ID
   const apiKey = 'AIzaSyB-SDwxIkzzVm_Dx8HiAgjU3N5sEcOfl-c'; // Your Google API Key
 
   fetch(`https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${apiKey}`)
-      .then(response => response.json())
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+      })
       .then(data => {
           if (data.result && data.result.reviews) {
               const reviews = data.result.reviews;
